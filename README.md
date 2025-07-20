@@ -1,3 +1,23 @@
+# bitchat.html
+
+bitchat in the browser using Bluetooth over USB/IP over Tailscale over WebAssembly.
+
+
+## WebVM Bluetooth
+
+The Web Bluetooth API has [limited availability](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API) across browsers.
+Furthermore, the Web Bluetooth API [lacks support](https://webbluetoothcg.github.io/web-bluetooth/) for advertising via BLE broadcast, crucial for mesh networking:
+
+> The first version of this specification allows web pages, running on a UA in the Central role, to connect to GATT Servers over either a BR/EDR or LE connection.
+
+As a workaround, we'll spin up a VM in the browser, and then connect to a real USB Bluetooth device using USB/IP.
+But browsers lack support for making arbitrary TCP/IP connections.
+
+As a workaround, [WebVM](https://github.com/leaningtech/webvm) supports networking by routing over Tailscale VPN using WebSockets.
+
+The Xzibit stack is completed by running a Python implementation of bitchat from the Linux VM's terminal.
+
+
 # WebVM
 
 [![Discord server](https://img.shields.io/discord/988743885121548329?color=%235865F2&logo=discord&logoColor=%23fff)](https://discord.gg/yWRr2YnD9c)

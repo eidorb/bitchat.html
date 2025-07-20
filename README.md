@@ -2,6 +2,17 @@
 
 bitchat in the browser using Bluetooth over USB/IP over Tailscale over WebAssembly.
 
+**This does not work.** USBIP relies on kernel modules to create and manage virtual USB devices.
+With WebVM, there is no kernel to load modules into.
+
+Tasks:
+
+- [x] build webvm with bitchat-python
+- [x] test bitchat-python with local usb bluetooth adaptor
+- [ ] configure USBIP server
+- [ ] test bitchat-python with remote usb bluetooth adaptor over USBIP
+- [ ] connect remote usb bluetooth adaptor via tailscale
+
 
 ## WebVM Bluetooth
 

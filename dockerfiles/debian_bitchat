@@ -24,7 +24,11 @@ RUN apt-get update && apt-get -y upgrade && \
 	# for bitchat-cli
 	python3-prompt-toolkit \
 	# for silly ideas
-	usbip tmux
+	usbip tmux \
+	# do the locales dance
+	locales && \
+		sed -i 's/# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen && \
+		locale-gen en_US.UTF-8
 
 # Make a user
 RUN useradd -m user && echo "user:password" | chpasswd
@@ -33,7 +37,7 @@ RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./bitchat /home/user/bitchat
 RUN chmod +x /home/user/bitchat/start_tmux.sh
 
-# Install Python packages 
+# Install Python packages
 COPY --from=builder /root/.local/bin/uv /bin/uv
 RUN uv pip install --system --break-system-packages aioconsole pybloom-live # for bitchat-python
 

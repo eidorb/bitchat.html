@@ -19,7 +19,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	# for bitchat-cli
 	python3-prompt-toolkit \
 	# for silly ideas
-	usbip
+	usbip tmux
 
 # Make a user, then copy over the /example directory
 RUN useradd -m user && echo "user:password" | chpasswd

@@ -1,4 +1,9 @@
-FROM --platform=i386 i386/debian:bookworm
+# Build separately to avoid bloated image
+FROM --platform=i386 i386/debian:trixie AS builder
+RUN apt-get update && apt-get install -y git rustc cargo libdbus-1-dev
+RUN cargo install --git https://github.com/ShilohEye/bitchat-terminal --root /usr/local
+
+FROM --platform=i386 i386/debian:trixie
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get -y upgrade && \
@@ -32,6 +37,9 @@ RUN git clone https://github.com/dearabhin/bitchat-cli.git
 
 # Install additional packages
 RUN uv pip install --system --break-system-packages aioconsole pybloom-live # for bitchat-python
+
+# Copy bitchat-terminal binary from builder
+COPY --from=builder /usr/local/bin/bitchat /usr/local/bin/bitchat
 
 RUN echo 'root:password' | chpasswd
 CMD [ "/bin/bash" ]

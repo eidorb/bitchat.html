@@ -11,6 +11,8 @@ export const introMessage = [
 	"|    2. TODO: Connect to Bluetooth device over network                        |",
 	"|    3. Run bitchat:                                                          |",
 	"|                                                                             |",
+	"|           bitchat                                                           |",
+	"|                                                                             |",
 	"|           cd bitchat-python                                                 |",
 	"|           python3 bitchat.py                                                |",
 	"|                                                                             |",

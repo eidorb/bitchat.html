@@ -1,0 +1,9 @@
+[submodule "documents/bitchat-python"]
+	path = bitchat/bitchat-python
+	url = git@github.com:kaganisildak/bitchat-python.git
+[submodule "documents/bitchat-cli"]
+	path = bitchat/bitchat-cli
+	url = git@github.com:dearabhin/bitchat-cli.git
+[submodule "bitchat-terminal"]
+	path = bitchat-terminal
+	url = git@github.com:ShilohEye/bitchat-terminal.git

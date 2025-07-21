@@ -1,7 +1,12 @@
 # Build separately to avoid bloated image
 FROM --platform=i386 i386/debian:trixie AS builder
-RUN apt-get update && apt-get install -y git rustc cargo libdbus-1-dev
-RUN cargo install --git https://github.com/ShilohEye/bitchat-terminal --root /usr/local
+RUN apt-get update && apt-get install -y git curl rustc cargo libdbus-1-dev
+COPY ./bitchat-terminal /bitchat-terminal
+WORKDIR /bitchat-terminal
+RUN cargo build --release
+# Install uv
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
 
 FROM --platform=i386 i386/debian:trixie
 ARG DEBIAN_FRONTEND=noninteractive
@@ -21,25 +26,20 @@ RUN apt-get update && apt-get -y upgrade && \
 	# for silly ideas
 	usbip tmux
 
-# Make a user, then copy over the /example directory
+# Make a user
 RUN useradd -m user && echo "user:password" | chpasswd
 
-# Install uv to user's dir
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-RUN sh /uv-installer.sh && rm /uv-installer.sh
-RUN mv /root/.local /home/user/
-ENV PATH="/home/user/.local/bin/:$PATH"
+# Copy projects and scripts
+COPY --chown=user:user ./bitchat /home/user/bitchat
+RUN chmod +x /home/user/bitchat/start_tmux.sh
 
-# Clone repos
-WORKDIR /home/user
-RUN git clone https://github.com/kaganisildak/bitchat-python.git
-RUN git clone https://github.com/dearabhin/bitchat-cli.git
-
-# Install additional packages
+# Install Python packages 
+COPY --from=builder /root/.local/bin/uv /bin/uv
 RUN uv pip install --system --break-system-packages aioconsole pybloom-live # for bitchat-python
 
 # Copy bitchat-terminal binary from builder
-COPY --from=builder /usr/local/bin/bitchat /usr/local/bin/bitchat
+COPY --from=builder /bitchat-terminal/target/release/bitchat /bin/bitchat
 
+WORKDIR /home/user/bitchat
 RUN echo 'root:password' | chpasswd
 CMD [ "/bin/bash" ]

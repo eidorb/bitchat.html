@@ -11,7 +11,7 @@ on:
         type: string
         description: 'Path to the Dockerfile'
         required: true
-        default: 'dockerfiles/debian_bitchat_python'
+        default: 'dockerfiles/debian_bitchat'
 
       IMAGE_SIZE:
         type: string
@@ -102,6 +102,9 @@ jobs:
     steps:
       # Checks-out our repository under $GITHUB_WORKSPACE, so our job can access it
       - uses: actions/checkout@v4
+        with:
+          # Ensure submodule contents are checked out to filesystem
+          submodules: recursive
 
       # Setting the IMAGE_NAME variable in GITHUB_ENV to <Dockerfile name>_<date>_<run_id>.ext2.
       - name: Generate the image_name.

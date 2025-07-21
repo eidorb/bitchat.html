@@ -1,19 +1,37 @@
 FROM --platform=i386 i386/debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get clean && apt-get update && apt-get -y upgrade
-RUN apt-get -y install dbus curl git bluez usbip python3-cryptography
+
+RUN apt-get update && apt-get -y upgrade && \
+	apt-get install -y apt-utils bsdmainutils ca-certificates \
+	cpio curl dmidecode dmsetup git \
+	hexedit ifupdown init logrotate lsb-base lshw \
+	netbase openssl procps python3 python3-cryptography \
+	readline-common rsyslog sensible-utils \
+	ssh systemd systemd-sysv udev vim wget whiptail \
+	xxd iptables isc-dhcp-client isc-dhcp-common kmod less netcat-openbsd \
+	# for bitchat-python, no python3-aioconsole for bookworm
+	python3-bleak python3-lz4 \
+	# for bitchat-cli
+	python3-prompt-toolkit \
+	# for silly ideas
+	usbip
+
+# Make a user, then copy over the /example directory
 RUN useradd -m user && echo "user:password" | chpasswd
+
+# Install uv to user's dir
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 RUN mv /root/.local /home/user/
 ENV PATH="/home/user/.local/bin/:$PATH"
+
+# Clone repos
 WORKDIR /home/user
 RUN git clone https://github.com/kaganisildak/bitchat-python.git
-# We set WORKDIR, as this gets extracted by Webvm to be used as the cwd. This is optional.
-WORKDIR /home/user/bitchat-python
-RUN uv pip install --system --break-system-packages aioconsole bleak pybloom-live lz4
-# We set env, as this gets extracted by Webvm. This is optional.
-ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
+RUN git clone https://github.com/dearabhin/bitchat-cli.git
+
+# Install additional packages
+RUN uv pip install --system --break-system-packages aioconsole pybloom-live # for bitchat-python
+
 RUN echo 'root:password' | chpasswd
-# CMD [ "uv", "run", "bitchat.py" ]
 CMD [ "/bin/bash" ]

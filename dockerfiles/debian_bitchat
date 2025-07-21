@@ -8,7 +8,7 @@ RUN cargo build --release
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh
 
-FROM --platform=i386 i386/debian:trixie
+FROM --platform=i386 i386/debian:bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get -y upgrade && \

@@ -1,6 +1,8 @@
-# bitchat.html
+# [bitchat.html](http://eidorb.github.io/bitchat.html/)
 
 bitchat in the browser using Bluetooth over USB/IP over Tailscale over WebAssembly.
+
+http://eidorb.github.io/bitchat.html/
 
 **This does not work.** USBIP relies on kernel modules to create and manage virtual USB devices.
 With WebVM, there is no kernel to load modules into.

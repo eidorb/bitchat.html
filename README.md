@@ -11,6 +11,7 @@ Tasks:
 
 - [x] build webvm with bitchat-python
 - [x] test bitchat-python with local usb bluetooth adaptor
+- [ ] test remote system d-bus
 - [ ] configure USBIP server
 - [ ] test bitchat-python with remote usb bluetooth adaptor over USBIP
 - [ ] connect remote usb bluetooth adaptor via tailscale

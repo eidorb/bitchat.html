@@ -1,6 +1,6 @@
 # build in bullseye for compatibility with final image
 FROM --platform=i386 i386/debian:bullseye AS builder
-RUN apt-get update && apt-get install -y curl libdbus-1-dev libatomic1
+RUN apt-get update && apt-get install -y curl build-essential libdbus-1-dev libatomic1
 # bitchat-terminal requres rust 1.85+ (debian trixie)
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
     sh -s -- --default-toolchain stable --default-host i686-unknown-linux-gnu -y

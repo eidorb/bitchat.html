@@ -1,5 +1,12 @@
-# build in bullseye for compatibility with final image
-FROM --platform=i386 i386/debian:bullseye AS builder
+# build in buster for compatibility with final image
+FROM --platform=i386 i386/debian:buster AS builder
+# build libdbus with tcp enabled?
+RUN apt-get update && apt-get install -y \
+    git build-essential autoconf automake libtool pkg-config
+RUN git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus && \
+    cd /tmp/dbus && \
+    ./autogen.sh --enable-tcp=yes --disable-doxygen-docs --disable-xml-docs && \
+    make && make install && ldconfig
 RUN apt-get update && apt-get install -y curl build-essential libdbus-1-dev libatomic1
 # bitchat-terminal requres rust 1.85+ (debian trixie)
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
@@ -12,8 +19,8 @@ RUN cargo build --release
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh
 
-# webvm.io uses buster, try bullseye
-FROM --platform=i386 i386/debian:bullseye
+# webvm.io uses buster, match it
+FROM --platform=i386 i386/debian:buster
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get -y upgrade && \
@@ -24,7 +31,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	readline-common rsyslog sensible-utils \
 	ssh systemd systemd-sysv udev vim wget whiptail \
 	xxd iptables isc-dhcp-client isc-dhcp-common kmod less netcat-openbsd \
-	# required for packaging on old python (bullseye)
+	# required for packaging on old python (< bookworm)
 	python3-distutils \
 	# for bitchat-python (bookworm has python3-bleak,trixie has python3-aioconsole)
 	python3-lz4 \

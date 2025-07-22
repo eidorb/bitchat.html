@@ -7,3 +7,6 @@
 [submodule "bitchat-terminal"]
 	path = bitchat-terminal
 	url = git@github.com:ShilohEye/bitchat-terminal.git
+[submodule "blink"]
+	path = blink
+	url = git@github.com:jart/blink.git

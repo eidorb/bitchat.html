@@ -27,7 +27,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	# for bitchat-cli
 	python3-prompt-toolkit \
 	# for silly ideas
-	usbip tmux
+	bluez usbip tmux
 
 # Make a user
 RUN useradd -m user && echo "user:password" | chpasswd

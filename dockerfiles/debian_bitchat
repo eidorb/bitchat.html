@@ -20,8 +20,8 @@ RUN apt-get update && apt-get -y upgrade && \
 	readline-common rsyslog sensible-utils \
 	ssh systemd systemd-sysv udev vim wget whiptail \
 	xxd iptables isc-dhcp-client isc-dhcp-common kmod less netcat-openbsd \
-	# for bitchat-python, no python3-aioconsole for bookworm
-	python3-bleak python3-lz4 \
+	# for bitchat-python (bookworm has python3-bleak,trixie has python3-aioconsole)
+	python3-lz4 \
 	# for bitchat-cli
 	python3-prompt-toolkit \
 	# for silly ideas
@@ -36,7 +36,7 @@ RUN chmod +x /home/user/bitchat/start_tmux.sh
 
 # Install Python packages 
 COPY --from=builder /root/.local/bin/uv /bin/uv
-RUN uv pip install --system --break-system-packages aioconsole pybloom-live # for bitchat-python
+RUN uv pip install --system --break-system-packages aioconsole bleak pybloom-live # for bitchat-python
 
 # Copy bitchat-terminal binary from builder
 COPY --from=builder /bitchat-terminal/target/release/bitchat /bin/bitchat

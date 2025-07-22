@@ -25,11 +25,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	# for bitchat-cli
 	python3-prompt-toolkit \
 	# for silly ideas
-	usbip tmux \
-	# do the locales dance
-	locales && \
-		sed -i 's/# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen && \
-		locale-gen en_US.UTF-8
+	usbip tmux
 
 # Make a user
 RUN useradd -m user && echo "user:password" | chpasswd

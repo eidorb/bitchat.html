@@ -1,6 +1,12 @@
-# bitchat-terminal requires rustc 1.85+, available in trixie
-FROM --platform=i386 i386/debian:trixie AS builder
-RUN apt-get update && apt-get install -y git curl rustc cargo libdbus-1-dev
+# build in buster for compatibility with final image
+FROM --platform=i386 i386/debian:buster AS builder
+RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list
+RUN apt-get update && apt-get install -y curl build-essential libdbus-1-dev libatomic1
+# bitchat-terminal requres rust 1.85+ (debian trixie)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+    sh -s -- --default-toolchain stable --default-host i686-unknown-linux-gnu -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 COPY ./bitchat-terminal /bitchat-terminal
 WORKDIR /bitchat-terminal
 RUN cargo build --release
@@ -8,10 +14,12 @@ RUN cargo build --release
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh
 
-# webvm.io uses buster, try bullseye
-FROM --platform=i386 i386/debian:bullseye
+# webvm.io uses buster, match it
+FROM --platform=i386 i386/debian:buster
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y apt-utils bsdmainutils ca-certificates \
 	cpio curl dmidecode dmsetup git \
@@ -20,7 +28,7 @@ RUN apt-get update && apt-get -y upgrade && \
 	readline-common rsyslog sensible-utils \
 	ssh systemd systemd-sysv udev vim wget whiptail \
 	xxd iptables isc-dhcp-client isc-dhcp-common kmod less netcat-openbsd \
-	# required for packaging on old python (bullseye)
+	# required for packaging on old python (< bookworm)
 	python3-distutils \
 	# for bitchat-python (bookworm has python3-bleak,trixie has python3-aioconsole)
 	python3-lz4 \

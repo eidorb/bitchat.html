@@ -20,6 +20,8 @@ RUN apt-get update && apt-get -y upgrade && \
 	readline-common rsyslog sensible-utils \
 	ssh systemd systemd-sysv udev vim wget whiptail \
 	xxd iptables isc-dhcp-client isc-dhcp-common kmod less netcat-openbsd \
+	# required for packaging on old python (bullseye)
+	python3-distutils \
 	# for bitchat-python (bookworm has python3-bleak,trixie has python3-aioconsole)
 	python3-lz4 \
 	# for bitchat-cli

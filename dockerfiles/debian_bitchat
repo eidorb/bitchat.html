@@ -1,12 +1,7 @@
 # build in buster for compatibility with final image
 FROM --platform=i386 i386/debian:buster AS builder
-# build libdbus with tcp enabled?
-RUN apt-get update && apt-get install -y \
-    git build-essential autoconf automake libtool pkg-config
-RUN git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus && \
-    cd /tmp/dbus && \
-    ./autogen.sh --enable-tcp=yes --disable-doxygen-docs --disable-xml-docs && \
-    make && make install && ldconfig
+RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list
 RUN apt-get update && apt-get install -y curl build-essential libdbus-1-dev libatomic1
 # bitchat-terminal requres rust 1.85+ (debian trixie)
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
@@ -23,6 +18,8 @@ RUN sh /uv-installer.sh
 FROM --platform=i386 i386/debian:buster
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get install -y apt-utils bsdmainutils ca-certificates \
 	cpio curl dmidecode dmsetup git \

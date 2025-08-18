@@ -7,8 +7,13 @@ RUN apt-get update && apt-get install -y curl build-essential libdbus-1-dev liba
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
     sh -s -- --default-toolchain stable --default-host i686-unknown-linux-gnu -y
 ENV PATH="/root/.cargo/bin:${PATH}"
+# build bitchat-terminal
 COPY ./bitchat-terminal /bitchat-terminal
 WORKDIR /bitchat-terminal
+RUN cargo build --release
+# build bitchat-tui
+COPY ./bitchat-tui /bitchat-tui
+WORKDIR /bitchat-tui
 RUN cargo build --release
 # Install uv
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
@@ -48,8 +53,9 @@ RUN chmod +x /home/user/bitchat/start_tmux.sh
 COPY --from=builder /root/.local/bin/uv /bin/uv
 RUN uv pip install --system --break-system-packages aioconsole bleak pybloom-live # for bitchat-python
 
-# Copy bitchat-terminal binary from builder
+# Copy bitchat-terminal & bitchat-tui binaries from builder
 COPY --from=builder /bitchat-terminal/target/release/bitchat /bin/bitchat
+COPY --from=builder /bitchat-tui/target/release/bitchat-tui /bin/bitchat-tui
 
 # We set WORKDIR, as this gets extracted by Webvm to be used as the cwd. This is optional.
 WORKDIR /home/user/bitchat

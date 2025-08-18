@@ -7,3 +7,6 @@
 [submodule "bitchat-terminal"]
 	path = bitchat-terminal
 	url = git@github.com:ShilohEye/bitchat-terminal.git
+[submodule "bitchat-tui"]
+	path = bitchat-tui
+	url = git@github.com:vaibhav-mattoo/bitchat-tui.git
